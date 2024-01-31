@@ -33,3 +33,82 @@ function startQuiz() {
     }, 1000);
     displayQuestion(questions[currentQuestionIndex]);
 }
+// Function to display the current question and choices 
+function displayQuestion(question) {
+    questionTitle.textContent = question.question;
+    choicesContainer.innerHTML = '';
+
+    for (let i = 0; i < question.choices.length; i++) {
+        let choice = question.choices[i];
+        let button = document.createElement('button');
+        button.textContent = choice;
+        button.setAttribute('data-index', i);
+        button.onclick = checkAnswer;
+        choicesContainer.appendChild(button);
+    }
+}
+// Function to display feedback for correct or incorrect answers
+function showFeedback(message) {
+    feedbackContainer.textContent = message;
+    feedbackContainer.setAttribute('class', `feedback`);
+    setTimeout(function () {
+        feedbackContainer.setAttribute('class', 'feedback hide');
+    }, 1000);
+}
+function checkAnswer(e) {
+    let i = e.target.getAttribute('data-index');
+    let question = questions[currentQuestionIndex];    
+    if (question.choices[i] === question.choices[question.answer]) {
+        sfxCorrect.play();
+        showFeedback('Correct!');       
+        score += 10;        
+    } else {
+        sfxIncorrect.play();
+        showFeedback('Incorrect!');        
+        timeLeft -= 10;     
+    }
+
+    // Move to the next question
+    currentQuestionIndex++;
+    if (currentQuestionIndex < questions.length) {
+        // If there are more questions, display the next one
+        displayQuestion(questions[currentQuestionIndex]);
+    } else {
+        // Otherwise, end the quiz
+        endQuiz();
+    }
+}
+// End the quiz and display the final score 
+function endQuiz() {
+    clearInterval(timerInterval);
+    questionsContainer.classList.add('hide');
+    endScreen.classList.remove('hide');
+    finalScoreDisplay.textContent = score;
+}
+// Save the score to local storage and move to the high scores page
+// Delete the last high score if there are more than 15 high scores in local storage to save memory.
+function saveScore() {
+    const initials = initialsInput.value;
+    if (initials === '') {
+        alert('Please enter your initials.');
+        return;
+    }
+    const highScores = JSON.parse(localStorage.getItem('highScores')) || [];
+    const newScore = {
+        initials: initials,
+        score: score,
+    };
+    highScores.push(newScore);
+    highScores.sort(function (a, b) {
+        return b.score - a.score;
+    });
+    if (highScores.length > 15) {
+        highScores.pop();
+    }
+    localStorage.setItem('highScores', JSON.stringify(highScores));
+    window.location.href = 'highscores.html';
+} 
+
+// Event listeners
+startButton.addEventListener('click', startQuiz);
+submitButton.addEventListener('click', saveScore);
