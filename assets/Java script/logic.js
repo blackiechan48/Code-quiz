@@ -15,6 +15,7 @@ let currentQuestionIndex = 0;
 let timeLeft = 100;
 let score = 0;
 let timerInterval;
+
 // Import sfx Sounds
 let sfxCorrect = new Audio("assets/sfx/correct.wav");
 let sfxIncorrect = new Audio("assets/sfx/incorrect.wav");
