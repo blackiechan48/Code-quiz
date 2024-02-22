@@ -25,5 +25,6 @@ Licensed under the MIT License
 https://github.com/blackiechan48/Code-quiz
 
 ## deployed application link 
+https://blackiechan48.github.io/Code-quiz
 
 
